@@ -14,17 +14,83 @@
         <label for="height">Height:</label>
         <input type="number" id="height" name="height" required>
         
+        <label for="tileWidth">Tile Width:</label>
+        <input type="number" id="tileWidth" name="tileWidth" required>
+        <br>
         <!-- Add checkboxes here -->
-        <div>
-            <input type="checkbox" id="wineGlass" name="options" value="Wine Glass">
+        <span>
+            <input type="checkbox" name="options" value="wineGlass" checked>
             <label for="wineGlass">Wine Glass</label>
-        </div>
-        <!-- ... (Repeat for each item) ... -->
-        <div>
-            <input type="checkbox" id="bathroom" name="options" value="Bathroom">
+        </span>
+        <span>
+            <input type="checkbox" name="options" value="waterGlass" checked>
+            <label for="waterGlass">Water Glass</label>
+        </span>
+        <span>
+            <input type="checkbox" name="options" value="pots" checked>
+            <label for="pots">Pots</label>
+        </span>
+        <span>
+            <input type="checkbox" name="options" value="pans" checked>
+            <label for="pans">Pans</label>
+        </span>
+        <span>
+            <input type="checkbox" name="options" value="plates" checked>
+            <label for="plates">Plates</label>
+        </span>
+        <span>
+            <input type="checkbox" name="options" value="bowls" checked>
+            <label for="bowls">Bowls</label>
+        </span>
+        <span>
+            <input type="checkbox" name="options" value="coffeeCups" checked>
+            <label for="coffeeCups">Coffee Cups</label>
+        </span>
+        <span>
+            <input type="checkbox" name="options" value="utensils" checked>
+            <label for="utensils">Knives & Forks</label>
+        </span>
+        <span>
+            <input type="checkbox" name="options" value="bottleOpener" checked>
+            <label for="bottleOpener">Bottle Opener</label>
+        </span>
+        <span>
+            <input type="checkbox" name="options" value="spices" checked>
+            <label for="spices">Spices</label>
+        </span>
+        <span>
+            <input type="checkbox" name="options" value="baking" checked>
+            <label for="baking">Baking</label>
+        </span>
+        <span>
+            <input type="checkbox" name="options" value="trash" checked>
+            <label for="trash">Trash</label>
+        </span>
+        <span>
+            <input type="checkbox" name="options" value="cleaningSupplies" checked>
+            <label for="cleaningSupplies">Cleaning Supplies</label>
+        </span>
+        <span>
+            <input type="checkbox" name="options" value="broomMop" checked>
+            <label for="broomMop">Broom / Mop</label>
+        </span>
+        <span>
+            <input type="checkbox" name="options" value="cleaningSupplies" checked>
+            <label for="cleaningSupplies">Cleaning Supplies</label>
+        </span>
+        <span>
+            <input type="checkbox" name="options" value="recycling" checked>
+            <label for="recycling">Recycling</label>
+        </span>
+        <span>
+            <input type="checkbox" name="options" value="bathroom" checked>
             <label for="bathroom">Bathroom</label>
-        </div>
-
+        </span>
+        <span>
+            <input type="checkbox" name="options" value="qr" checked>
+            <label for="qr">QR Code</label>
+        </span>
+        <br>
         <input type="submit" value="Generate SVG">
     </form>
 
@@ -33,7 +99,7 @@
         <h2>Preview</h2>
         <div id="svgPreview" alt="SVG Preview">
         <button id="downloadBtn" style="display:none;">Download SVG</button>
-    </div>
+    </span>
 
     <script src="designs.js"></script>
     <script src="script.js"></script>

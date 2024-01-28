@@ -5,7 +5,7 @@ document.getElementById('svgForm').addEventListener('submit', function(event) {
     const width = document.getElementById('width').value;
     const height = document.getElementById('height').value;
     const options = Array.from(document.querySelectorAll('input[name="options"]:checked')).map(el => el.value);
-
+    console.log(options);
     // Generate SVG based on form values
     const svgData = generateSVG(width, height, options);
 
