@@ -2,37 +2,55 @@ document.getElementById('svgForm').addEventListener('submit', function(event) {
     event.preventDefault();
 
     // Get form values
-    const width = document.getElementById('width').value;
-    const height = document.getElementById('height').value;
+    const width = parseFloat(document.getElementById('width').value);
+    const height = parseFloat(document.getElementById('height').value);
+    const tileWidth = parseFloat(document.getElementById('tileWidth').value);
     const options = Array.from(document.querySelectorAll('input[name="options"]:checked')).map(el => el.value);
-    console.log(options);
+    console.log(options, width, height, tileWidth);
     // Generate SVG based on form values
-    const svgData = generateSVG(width, height, options);
+    const svgData = generateSVG(width, height, options, tileWidth);
 
     // Display SVG in preview
     const svgPreview = document.getElementById('svgPreview');
     svgPreview.innerHTML = svgData;
 
-    // Show download button
-    const downloadBtn = document.getElementById('downloadBtn');
-    downloadBtn.style.display = 'block';
-    downloadBtn.onclick = function() {
-        downloadSVG(svgData);
-    };
+    // // Show download button
+    // const downloadBtn = document.getElementById('downloadBtn');
+    // downloadBtn.style.display = 'block';
+    // downloadBtn.onclick = function() {
+    //     downloadSVG(svgData);
+    // };
 });
 
-function generateSVG(width, height, options) {
-    // Placeholder function to generate SVG data
-    // You'll need to implement the actual SVG generation based on options
-    return `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
+function generateSVG(widthInInches, heightInInches, options, tileWidthInInches) {
+    // Calculate the number of columns and rows based on the tile width
+    let cols = Math.floor(widthInInches / tileWidthInInches);
+    let rows = Math.floor(heightInInches / tileWidthInInches);
+
+    // Define the SVG, setting its physical width and height in inches, and its viewBox in arbitrary units
+    let svgRaw = `<svg width="100%" height="auto" viewBox="0 0 ${cols * tileWidthInInches} ${rows * tileWidthInInches}" preserveAspectRatio="xMinYMin meet" xmlns="http://www.w3.org/2000/svg">
     <style type="text/css">
-	.st0{fill:none;stroke:#FF0000;stroke-width:0.576;stroke-miterlimit:10;}
-	.st1{fill:#FFFFFF;}
-</style>
-<text x="10" y="20" class="st0">SVG Placeholder</text>
-        <!-- Implement actual SVG elements based on options here -->
-    </svg>`;
+        .st0{fill:none;stroke:#FF0000;stroke-width:0.576;stroke-miterlimit:10;}
+        .st1{fill:#FF0000;}
+    </style>
+    <!-- Define the symbol for a tile -->
+    <symbol id="cut" viewBox="0 0 ${tileWidthInInches} ${tileWidthInInches}">
+        <rect x="0" y="0" width="${tileWidthInInches}" height="${tileWidthInInches}" rx=".15" class="st0"/> <!-- Removed the content placeholder -->
+    </symbol>`;
+
+    // Create the rows and columns of tiles
+    for (let i = 0; i < cols; i++) {
+        for (let j = 0; j < rows; j++) {
+            svgRaw += `<use href="#cut" x="${j * tileWidthInInches}" y="${i * tileWidthInInches}"/>`;
+        }
+    }
+
+    // Close the SVG tag
+    svgRaw += '</svg>';
+    
+    return svgRaw;
 }
+
 
 function downloadSVG(svgData) {
     // Function to download SVG
