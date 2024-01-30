@@ -28,20 +28,38 @@ function generateSVG(widthInInches, heightInInches, options, tileWidthInInches) 
     let rows = Math.floor(heightInInches / tileWidthInInches);
 
     // Define the SVG, setting its physical width and height in inches, and its viewBox in arbitrary units
-    let svgRaw = `<svg width="100%" height="auto" viewBox="0 0 ${cols * tileWidthInInches} ${rows * tileWidthInInches}" preserveAspectRatio="xMinYMin meet" xmlns="http://www.w3.org/2000/svg">
+    let svgRaw = `<svg width="100%" viewBox="0 0 ${cols * tileWidthInInches} ${rows * tileWidthInInches}" preserveAspectRatio="xMinYMin meet" xmlns="http://www.w3.org/2000/svg">
     <style type="text/css">
-        .st0{fill:none;stroke:#FF0000;stroke-width:0.576;stroke-miterlimit:10;}
-        .st1{fill:#FF0000;}
+        .st0{fill:none;stroke:#FF0000;stroke-width:0.0882;stroke-miterlimit:10;}
+        .st1{fill:#000000;}
     </style>
     <!-- Define the symbol for a tile -->
     <symbol id="cut" viewBox="0 0 ${tileWidthInInches} ${tileWidthInInches}">
-        <rect x="0" y="0" width="${tileWidthInInches}" height="${tileWidthInInches}" rx=".15" class="st0"/> <!-- Removed the content placeholder -->
-    </symbol>`;
+        <rect x="0" y="0" style="fill:none;stroke:#FF0000;stroke-width:0.0882;stroke-miterlimit:10;" width="${tileWidthInInches}" height="${tileWidthInInches}" rx=".15" class="st0"/> <!-- Removed the content placeholder -->
+    </symbol>
+    ${baking}
+    ${bathroom}
+    ${recycling}
+    ${trash}
+    ${corkscrew}
+    ${wineGlasses}
+    ${utensils}
+    ${waterGlasses}
+    ${pots}
+    ${spices}
+    ${coffeeCups}
+    ${pans}
+    ${bowls}
+    ${plates}`;
 
+
+    let tile= 0;
     // Create the rows and columns of tiles
     for (let i = 0; i < cols; i++) {
         for (let j = 0; j < rows; j++) {
-            svgRaw += `<use href="#cut" x="${j * tileWidthInInches}" y="${i * tileWidthInInches}"/>`;
+            svgRaw += `<use href="#cut" width="${tileWidthInInches}" height="${tileWidthInInches}" x="${i * tileWidthInInches}" y="${j * tileWidthInInches}"/>`;
+            svgRaw += `<use href="#${options[tile%tile.length]}" class="st1" width="${tileWidthInInches}" height="${tileWidthInInches}" x="${i * tileWidthInInches}" y="${j * tileWidthInInches}"/>`;
+            tile++;
         }
     }
 
