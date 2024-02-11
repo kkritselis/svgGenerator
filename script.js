@@ -28,7 +28,8 @@ function generateSVG(widthInInches, heightInInches, options, tileWidthInInches) 
     let rows = Math.floor(heightInInches / tileWidthInInches);
 
     // Define the SVG, setting its physical width and height in inches, and its viewBox in arbitrary units
-    let svgRaw = `<svg width="100%" viewBox="0 0 ${widthInInches} ${heightInInches}" preserveAspectRatio="xMinYMin meet" xmlns="http://www.w3.org/2000/svg">
+    let svgRaw = `<?xml version="1.0" encoding="UTF-8"?>
+    <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="${widthInInches}in" height="${heightInInches}in" version="1.1" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd" viewBox="0 0 ${widthInInches}in ${heightInInches}in" preserveAspectRatio="xMinYMin meet" xmlns="http://www.w3.org/2000/svg">
     <style type="text/css">
         .st0{fill:none;stroke:#FF0000;stroke-width:0.001;stroke-miterlimit:10;}
         .st1{fill:#000000;}
@@ -57,9 +58,9 @@ function generateSVG(widthInInches, heightInInches, options, tileWidthInInches) 
     // Create the rows and columns of tiles
     for (let i = 0; i < rows; i++) {
         for (let j = 0; j < cols; j++) {
-            svgRaw += `<use href="#cut" width="${tileWidthInInches}" height="${tileWidthInInches}" x="${j * tileWidthInInches}" y="${i * tileWidthInInches}"/></use>`;
+            svgRaw += `<use href="#cut" width="${tileWidthInInches}in" height="${tileWidthInInches}in" x="${j * tileWidthInInches}in" y="${i * tileWidthInInches}in"/></use>`;
             console.log(tile, tile%options.length, options[tile%options.length]);
-            svgRaw += `<use href="#${options[tile%options.length]}" class="st1" width="${tileWidthInInches}" height="${tileWidthInInches}" x="${j * tileWidthInInches}" y="${i * tileWidthInInches}"/></use>`;
+            svgRaw += `<use href="#${options[tile%options.length]}in" class="st1" width="${tileWidthInInches}in" height="${tileWidthInInches}" x="${j * tileWidthInInches}in" y="${i * tileWidthInInches}in"/></use>`;
             tile++;
         }
     }
