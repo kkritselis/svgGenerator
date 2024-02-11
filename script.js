@@ -8,10 +8,10 @@ document.getElementById('svgForm').addEventListener('submit', function(event) {
     const options = Array.from(document.querySelectorAll('input[name="options"]:checked')).map(el => el.value);
     console.log(options, width, height, tileWidth);
     // Generate SVG based on form values
-    const svgData = generateSVG(width, height, options, tileWidth);
+    let svgData = generateSVG(width, height, options, tileWidth);
 
     // Display SVG in preview
-    const svgPreview = document.getElementById('svgPreview');
+    let svgPreview = document.getElementById('svgPreview');
     svgPreview.innerHTML = svgData;
 
     // // Show download button
@@ -28,14 +28,15 @@ function generateSVG(widthInInches, heightInInches, options, tileWidthInInches) 
     let rows = Math.floor(heightInInches / tileWidthInInches);
 
     // Define the SVG, setting its physical width and height in inches, and its viewBox in arbitrary units
-    let svgRaw = `<svg width="100%" viewBox="0 0 ${cols * tileWidthInInches} ${rows * tileWidthInInches}" preserveAspectRatio="xMinYMin meet" xmlns="http://www.w3.org/2000/svg">
+    let svgRaw = `<svg width="100%" viewBox="0 0 ${widthInInches} ${heightInInches}" preserveAspectRatio="xMinYMin meet" xmlns="http://www.w3.org/2000/svg">
     <style type="text/css">
-        .st0{fill:none;stroke:#FF0000;stroke-width:0.0882;stroke-miterlimit:10;}
+        .st0{fill:none;stroke:#FF0000;stroke-width:0.001;stroke-miterlimit:10;}
         .st1{fill:#000000;}
+        .st2{fill:#ffffff;}
     </style>
     <!-- Define the symbol for a tile -->
     <symbol id="cut" viewBox="0 0 ${tileWidthInInches} ${tileWidthInInches}">
-        <rect x="0" y="0" style="fill:none;stroke:#FF0000;stroke-width:0.0882;stroke-miterlimit:10;" width="${tileWidthInInches}" height="${tileWidthInInches}" rx=".15" class="st0"/> <!-- Removed the content placeholder -->
+        <rect x="0" y="0" style="fill:none;stroke:#FF0000;stroke-width:0.001;stroke-miterlimit:10;" width="${tileWidthInInches}" height="${tileWidthInInches}" rx=".15" class="st0"/> <!-- Removed the content placeholder -->
     </symbol>
     ${baking}
     ${bathroom}
@@ -52,13 +53,13 @@ function generateSVG(widthInInches, heightInInches, options, tileWidthInInches) 
     ${bowls}
     ${plates}`;
 
-
     let tile= 0;
     // Create the rows and columns of tiles
-    for (let i = 0; i < cols; i++) {
-        for (let j = 0; j < rows; j++) {
-            svgRaw += `<use href="#cut" width="${tileWidthInInches}" height="${tileWidthInInches}" x="${i * tileWidthInInches}" y="${j * tileWidthInInches}"/>`;
-            svgRaw += `<use href="#${options[tile%tile.length]}" class="st1" width="${tileWidthInInches}" height="${tileWidthInInches}" x="${i * tileWidthInInches}" y="${j * tileWidthInInches}"/>`;
+    for (let i = 0; i < rows; i++) {
+        for (let j = 0; j < cols; j++) {
+            svgRaw += `<use href="#cut" width="${tileWidthInInches}" height="${tileWidthInInches}" x="${j * tileWidthInInches}" y="${i * tileWidthInInches}"/></use>`;
+            console.log(tile, tile%options.length, options[tile%options.length]);
+            svgRaw += `<use href="#${options[tile%options.length]}" class="st1" width="${tileWidthInInches}" height="${tileWidthInInches}" x="${j * tileWidthInInches}" y="${i * tileWidthInInches}"/></use>`;
             tile++;
         }
     }
