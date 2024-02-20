@@ -44,6 +44,9 @@ function generateSVG(widthInInches, heightInInches, options, tileWidthInInches) 
     ${recycling}
     ${trash}
     ${corkscrew}
+    ${toiletPaper}
+    ${closet}
+    ${broomMop}
     ${wineGlasses}
     ${utensils}
     ${waterGlasses}
