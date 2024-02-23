@@ -63,7 +63,14 @@ function generateSVG(widthInInches, heightInInches, options, tileWidthInInches) 
         for (let j = 0; j < cols; j++) {
             svgRaw += `<use href="#cut" width="${tileWidthInInches*10}in" height="${tileWidthInInches*10}in" x="${j * tileWidthInInches*10}in" y="${i * tileWidthInInches*10}in"/></use>`;
             console.log(tile, tile%options.length, options[tile%options.length]);
-            svgRaw += `<use href="#${options[tile%options.length]}" class="st1" width="${tileWidthInInches*10}in" height="${tileWidthInInches*10}in" x="${j * tileWidthInInches*10}in" y="${i * tileWidthInInches*10}in"/></use>`;
+            if (options[tile%options.length] == "qr") {
+                var qrcode = new QRCode({ content: `https://www.householdhunt.com/${tile}`, join: true });
+                console.log(qrcode.svg());
+                let svg = extractSVGContents(qrcode.svg());
+                svgRaw += `<symbol id="qr" viewBox="0 0 101.93 101.93">${svg}</symbol>`;
+            } else {
+                svgRaw += `<use href="#${options[tile%options.length]}" class="st1" width="${tileWidthInInches*10}in" height="${tileWidthInInches*10}in" x="${j * tileWidthInInches*10}in" y="${i * tileWidthInInches*10}in"/></use>`;
+            }
             tile++;
         }
     }
@@ -85,4 +92,14 @@ function downloadSVG(svgData) {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+}
+
+function extractSVGContents(svgObject) {
+    var tempDiv = document.createElement('div');
+    console.log(tempDiv);
+    tempDiv.innerHTML = svgObject.outerHTML;
+    console.log(tempDiv);
+    var svgContents = tempDiv.querySelector('svg').innerHTML;
+    console.log(svgContents);
+    return svgContents;
 }
