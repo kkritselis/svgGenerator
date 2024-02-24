@@ -6,7 +6,7 @@ document.getElementById('svgForm').addEventListener('submit', function(event) {
     const height = parseFloat(document.getElementById('height').value);
     const tileWidth = parseFloat(document.getElementById('tileWidth').value);
     const options = Array.from(document.querySelectorAll('input[name="options"]:checked')).map(el => el.value);
-    console.log(options, width, height, tileWidth);
+
     // Generate SVG based on form values
     let svgData = generateSVG(width, height, options, tileWidth);
 
@@ -14,12 +14,12 @@ document.getElementById('svgForm').addEventListener('submit', function(event) {
     let svgPreview = document.getElementById('svgPreview');
     svgPreview.innerHTML = svgData;
 
-    // // Show download button
-    // const downloadBtn = document.getElementById('downloadBtn');
-    // downloadBtn.style.display = 'block';
-    // downloadBtn.onclick = function() {
-    //     downloadSVG(svgData);
-    // };
+    // Show download button
+    const downloadBtn = document.getElementById('downloadBtn');
+    downloadBtn.style.display = 'block';
+    downloadBtn.onclick = function() {
+        downloadSVG(svgData);
+    };
 });
 
 function generateSVG(widthInInches, heightInInches, options, tileWidthInInches) {
@@ -34,19 +34,13 @@ function generateSVG(widthInInches, heightInInches, options, tileWidthInInches) 
     };
     let colGap = (widthInInches - (cols*tileWidthInInches))/ (cols+1);
     let rowGap = (heightInInches - (rows*tileWidthInInches))/(rows+1);
-    console.log(cols, rows, colGap, rowGap);
 
     // Define the SVG, setting its physical width and height in inches, and its viewBox in arbitrary units
     let svgRaw = `<?xml version="1.0" encoding="UTF-8"?>
-    <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="${widthInInches}in" height="${heightInInches}in" version="1.1" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd" viewBox="0 0 ${widthInInches*1000} ${heightInInches*1000}" preserveAspectRatio="xMinYMin meet" xmlns="http://www.w3.org/2000/svg">
-    <style type="text/css">
-        .st0{fill:none;stroke:#FF0000;stroke-width:0.001;}
-        .st1{fill:#000000;}
-        .st2{fill:#ffffff;}
-    </style>
-    <!-- Define the symbol for a tile -->
-    <symbol id="cut" viewBox="0 0 ${tileWidthInInches*1000} ${tileWidthInInches*1000}">
-        <rect x="0" y="0" width="${tileWidthInInches*1000}" height="${tileWidthInInches*1000}" rx=".15" class="st0"/>
+    <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg xml:space="preserve" width="${widthInInches}in" height="${heightInInches}in" version="1.1" style="shape-rendering:geometricPrecision; fill-rule:evenodd; clip-rule:evenodd" preserveAspectRatio="xMinYMin meet" viewBox="0 0 ${widthInInches*1000} ${heightInInches*1000}" xmlns:xlink="http://www.w3.org/1999/xlink" 
+    <style type="text/css">.st1{fill:#000000;} .st2{fill:#ffffff;} </style>
+    <symbol id="cut" viewBox="0 0 ${tileWidthInInches} ${tileWidthInInches}">
+        <rect x="0" y="0" style="fill:none;stroke:#FF0000;stroke-width:0.001;stroke-miterlimit:10;" width="${tileWidthInInches}" height="${tileWidthInInches}" rx=".15"/>
     </symbol>
     ${baking}
     ${bathroom}
@@ -64,14 +58,23 @@ function generateSVG(widthInInches, heightInInches, options, tileWidthInInches) 
     ${coffeeCups}
     ${pans}
     ${bowls}
+    ${cleaningSupplies}
     ${plates}`;
 
     let tile= 0;
     // Create the rows and columns of tiles
     for (let i = 0; i < rows; i++) {
         for (let j = 0; j < cols; j++) {
-            svgRaw += `<use href="#cut" class="st0" width="${tileWidthInInches*1000}" height="${tileWidthInInches*1000}" x="${j * (tileWidthInInches+colGap)*1000}" y="${i * (tileWidthInInches+rowGap)*1000}"/></use>`;
-            svgRaw += `<use href="#${options[tile%options.length]}" class="st1" width="${tileWidthInInches*1000}" height="${tileWidthInInches*1000}" x="${j * (tileWidthInInches+colGap)*1000}" y="${i * (tileWidthInInches+rowGap)*1000}"/></use>`;
+            svgRaw += `<use xlink:href="#cut" class="st0" width="${tileWidthInInches*1000}" height="${tileWidthInInches*1000}" x="${j * (tileWidthInInches+colGap)*1000}" y="${i * (tileWidthInInches+rowGap)*1000}"/></use>`;
+
+            if (options[tile%options.length] == "qr") {
+                var qrcode = new QRCode({ content: `https://www.householdhunt.com/${tile}`, join: true });
+                console.log(qrcode.svg());
+                let svg = qrcode.svg();
+                svgRaw += `<symbol id="qr${tile}" viewBox="0 0 256 256">${svg}</symbol><use xlink:href="#qr${tile}" class="st1" width="${tileWidthInInches*1000}" height="${tileWidthInInches*1000}" x="${j * (tileWidthInInches+colGap)*1000}" y="${i * (tileWidthInInches+rowGap)*1000}"/>`;
+            } else {
+                svgRaw += `<use xlink:href="#${options[tile%options.length]}" class="st1" width="${tileWidthInInches*1000}" height="${tileWidthInInches*1000}" x="${j * (tileWidthInInches+colGap)*1000}" y="${i * (tileWidthInInches+rowGap)*1000}"/></use>`;
+            }
             tile++;
         }
     }
