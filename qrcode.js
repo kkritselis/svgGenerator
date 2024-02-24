@@ -368,34 +368,34 @@ QRCode.prototype.svg = function(opt) {
     //Wrapped in SVG document
     case "svg":
       if (xmlDeclaration) {
-        svg += '<?xml version="1.0" standalone="yes"?>' + EOL;
+        // svg += '<?xml version="1.0" standalone="yes"?>' + EOL;
       }
-      svg += '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="' + width + '" height="' + height + '">' + EOL;
-      svg += defs + bgrect + modrect;
-      svg += '</svg>';
+      // svg += '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="' + width + '" height="' + height + '">' + EOL;
+      svg += defs + modrect;
+      // svg += '</svg>';
       break;
       
     //Viewbox for responsive use in a browser, thanks to @danioso
     case "svg-viewbox":
       if (xmlDeclaration) {
-        svg += '<?xml version="1.0" standalone="yes"?>' + EOL;
+        // svg += '<?xml version="1.0" standalone="yes"?>' + EOL;
       }
-      svg += '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 ' + width + ' ' + height + '">' + EOL;
-      svg += defs + bgrect + modrect;
-      svg += '</svg>';
+      // svg += '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 ' + width + ' ' + height + '">' + EOL;
+      svg += defs + modrect;
+      // svg += '</svg>';
       break;
       
     
     //Wrapped in group element    
     case "g":
       svg += '<g width="' + width + '" height="' + height + '">' + EOL;
-      svg += defs + bgrect + modrect;
+      svg += defs + modrect;
       svg += '</g>';
       break;
       
     //Without a container
     default:
-      svg += (defs + bgrect + modrect).replace(/^\s+/, ""); //Clear indents on each line
+      svg += (defs + modrect).replace(/^\s+/, ""); //Clear indents on each line
       break;
   }
   
