@@ -26,24 +26,36 @@ function generateSVG(widthInInches, heightInInches, options, tileWidthInInches) 
     // Calculate the number of columns and rows based on the tile width
     let cols = Math.floor(widthInInches / tileWidthInInches);
     let rows = Math.floor(heightInInches / tileWidthInInches);
+    if ((widthInInches - (cols*tileWidthInInches))/ (cols+1) < .1) {
+        cols--;
+    };
+    if ((heightInInches - (rows*tileWidthInInches))/(rows+1) < .1) {
+        rows--;
+    };
+    let colGap = (widthInInches - (cols*tileWidthInInches))/ (cols+1);
+    let rowGap = (heightInInches - (rows*tileWidthInInches))/(rows+1);
+    console.log(cols, rows, colGap, rowGap);
 
     // Define the SVG, setting its physical width and height in inches, and its viewBox in arbitrary units
     let svgRaw = `<?xml version="1.0" encoding="UTF-8"?>
     <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="${widthInInches}in" height="${heightInInches}in" version="1.1" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd" viewBox="0 0 ${widthInInches*1000} ${heightInInches*1000}" preserveAspectRatio="xMinYMin meet" xmlns="http://www.w3.org/2000/svg">
     <style type="text/css">
-        .st0{fill:none;stroke:#FF0000;stroke-width:0.001;stroke-miterlimit:10;}
+        .st0{fill:none;stroke:#FF0000;stroke-width:0.001;}
         .st1{fill:#000000;}
         .st2{fill:#ffffff;}
     </style>
     <!-- Define the symbol for a tile -->
-    <symbol id="cut" viewBox="0 0 ${tileWidthInInches} ${tileWidthInInches}">
-        <rect x="0" y="0" style="fill:none;stroke:#FF0000;stroke-width:0.001;stroke-miterlimit:10;" width="${tileWidthInInches}in" height="${tileWidthInInches}in" rx=".15" class="st0"/> <!-- Removed the content placeholder -->
+    <symbol id="cut" viewBox="0 0 ${tileWidthInInches*1000} ${tileWidthInInches*1000}">
+        <rect x="0" y="0" width="${tileWidthInInches*1000}" height="${tileWidthInInches*1000}" rx=".15" class="st0"/>
     </symbol>
     ${baking}
     ${bathroom}
     ${recycling}
     ${trash}
     ${corkscrew}
+    ${toiletPaper}
+    ${closet}
+    ${broomMop}
     ${wineGlasses}
     ${utensils}
     ${waterGlasses}
@@ -58,9 +70,8 @@ function generateSVG(widthInInches, heightInInches, options, tileWidthInInches) 
     // Create the rows and columns of tiles
     for (let i = 0; i < rows; i++) {
         for (let j = 0; j < cols; j++) {
-            svgRaw += `<use href="#cut" width="${tileWidthInInches*10}in" height="${tileWidthInInches*10}in" x="${j * tileWidthInInches*10}in" y="${i * tileWidthInInches*10}in"/></use>`;
-            console.log(tile, tile%options.length, options[tile%options.length]);
-            svgRaw += `<use href="#${options[tile%options.length]}" class="st1" width="${tileWidthInInches*10}in" height="${tileWidthInInches*10}in" x="${j * tileWidthInInches*10}in" y="${i * tileWidthInInches*10}in"/></use>`;
+            svgRaw += `<use href="#cut" class="st0" width="${tileWidthInInches*1000}" height="${tileWidthInInches*1000}" x="${j * (tileWidthInInches+colGap)*1000}" y="${i * (tileWidthInInches+rowGap)*1000}"/></use>`;
+            svgRaw += `<use href="#${options[tile%options.length]}" class="st1" width="${tileWidthInInches*1000}" height="${tileWidthInInches*1000}" x="${j * (tileWidthInInches+colGap)*1000}" y="${i * (tileWidthInInches+rowGap)*1000}"/></use>`;
             tile++;
         }
     }
