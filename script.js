@@ -113,8 +113,6 @@ function downloadSVG(svgData) {
 
 document.getElementById('saveCountBtn').addEventListener('click', function(event) {
     event.preventDefault();
-    event.stopImmediatePropagation()
-    event.stopPropagation(); // Stop the event from propagating further
     saveQrCountToFile(qrCount);
 });
 
