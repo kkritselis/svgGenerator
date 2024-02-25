@@ -1,3 +1,17 @@
+let qrCount;
+
+document.getElementById('fileInput').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            qrCount = parseInt(e.target.result) || 0;
+        };
+        reader.readAsText(file);
+    }
+});
+
+
 document.getElementById('svgForm').addEventListener('submit', function(event) {
     event.preventDefault();
 
@@ -37,8 +51,7 @@ function generateSVG(widthInInches, heightInInches, options, tileWidthInInches) 
 
     // Define the SVG, setting its physical width and height in inches, and its viewBox in arbitrary units
     let svgRaw = `<?xml version="1.0" encoding="UTF-8"?>
-    <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg xml:space="preserve" width="${widthInInches}in" height="${heightInInches}in" version="1.1" style="shape-rendering:geometricPrecision; fill-rule:evenodd; clip-rule:evenodd" preserveAspectRatio="xMinYMin meet" viewBox="0 0 ${widthInInches*1000} ${heightInInches*1000}" xmlns:xlink="http://www.w3.org/1999/xlink" 
-    <style type="text/css">.st1{fill:#000000;} .st2{fill:#ffffff;} </style>
+    <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg xml:space="preserve" width="${widthInInches}in" height="${heightInInches}in" version="1.1" style="shape-rendering:geometricPrecision; fill-rule:evenodd; clip-rule:evenodd" preserveAspectRatio="xMinYMin meet" viewBox="0 0 ${widthInInches*1000} ${heightInInches*1000}" xmlns:xlink="http://www.w3.org/1999/xlink">
     <symbol id="cut" viewBox="0 0 ${tileWidthInInches} ${tileWidthInInches}">
         <rect x="0" y="0" style="fill:none;stroke:#FF0000;stroke-width:0.001;stroke-miterlimit:10;" width="${tileWidthInInches}" height="${tileWidthInInches}" rx=".15"/>
     </symbol>
@@ -65,15 +78,15 @@ function generateSVG(widthInInches, heightInInches, options, tileWidthInInches) 
     // Create the rows and columns of tiles
     for (let i = 0; i < rows; i++) {
         for (let j = 0; j < cols; j++) {
-            svgRaw += `<use xlink:href="#cut" class="st0" width="${tileWidthInInches*1000}" height="${tileWidthInInches*1000}" x="${j * (tileWidthInInches+colGap)*1000}" y="${i * (tileWidthInInches+rowGap)*1000}"/></use>`;
+            svgRaw += `<use xlink:href="#cut" class="st0" width="${tileWidthInInches*1000}" height="${tileWidthInInches*1000}" x="${j * (tileWidthInInches+colGap)*1000}" y="${i * (tileWidthInInches+rowGap)*1000}"/>`;
 
             if (options[tile%options.length] == "qr") {
-                var qrcode = new QRCode({ content: `https://www.householdhunt.com/${tile}`, join: true });
-                console.log(qrcode.svg());
+                var qrcode = new QRCode({ content: `https://www.householdhunt.com/${qrCount}`, join: true });
                 let svg = qrcode.svg();
                 svgRaw += `<symbol id="qr${tile}" viewBox="0 0 256 256">${svg}</symbol><use xlink:href="#qr${tile}" class="st1" width="${tileWidthInInches*1000}" height="${tileWidthInInches*1000}" x="${j * (tileWidthInInches+colGap)*1000}" y="${i * (tileWidthInInches+rowGap)*1000}"/>`;
+                qrCount++;
             } else {
-                svgRaw += `<use xlink:href="#${options[tile%options.length]}" class="st1" width="${tileWidthInInches*1000}" height="${tileWidthInInches*1000}" x="${j * (tileWidthInInches+colGap)*1000}" y="${i * (tileWidthInInches+rowGap)*1000}"/></use>`;
+                svgRaw += `<use xlink:href="#${options[tile%options.length]}" class="st1" width="${tileWidthInInches*1000}" height="${tileWidthInInches*1000}" x="${j * (tileWidthInInches+colGap)*1000}" y="${i * (tileWidthInInches+rowGap)*1000}"/>`;
             }
             tile++;
         }
@@ -96,4 +109,24 @@ function downloadSVG(svgData) {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+}
+
+document.getElementById('saveCountBtn').addEventListener('click', function(event) {
+    event.preventDefault();
+    event.stopImmediatePropagation()
+    event.stopPropagation(); // Stop the event from propagating further
+    saveQrCountToFile(qrCount);
+});
+
+function saveQrCountToFile(qrCount) {
+    const qrCountText = qrCount.toString();
+    const blob = new Blob([qrCountText], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'qrCount.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
 }
